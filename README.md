@@ -1,1 +1,3 @@
-# video-to-ascii
+# Video to ASCII
+
+A simple video to ASCII converter
