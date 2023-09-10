@@ -1,10 +1,11 @@
 #include "bitmap.h"
 #include <iostream>
 #include <fstream>
+#include <vector>
 #include <cstdint>
 
 int index(int columns, int x, int y);
-RGB24 *bitmap_to_array(const char *path);
+std::vector<RGB24> bitmap_to_array(const char *path);
 
 int main(int argc, char *argv[]) {
     // if (argc < 2) {
@@ -18,7 +19,7 @@ int index(int columns, int x, int y) {
     return (y * columns + x);
 }
 
-RGB24 *bitmap_to_array(const char *path) {
+std::vector<RGB24> bitmap_to_array(const char *path) {
     std::ifstream img;
     img.open(path, std::ios_base::binary);
 
@@ -35,7 +36,7 @@ RGB24 *bitmap_to_array(const char *path) {
     // Go to pixel information
     img.seekg(header.offset);
 
-    RGB24 *pixel_array = new RGB24[width * height];
+    std::vector<RGB24> pixel_array(width * height);
 
     // For pixel arrays with no padding
     if (width % 4 == 0) {
@@ -61,6 +62,12 @@ RGB24 *bitmap_to_array(const char *path) {
         }
     }
     img.close();
+
+    for (int i = 0; i < width * height; i++) {
+        std::cout << (int) pixel_array[i].rgb_blue << '\n';
+        std::cout << (int) pixel_array[i].rgb_green << '\n';
+        std::cout << (int) pixel_array[i].rgb_red << "\n\n";
+    }
 
     return pixel_array;
 }
