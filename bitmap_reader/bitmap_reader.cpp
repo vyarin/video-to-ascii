@@ -2,7 +2,6 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
-#include <cstdint>
 
 int index(int columns, int x, int y);
 std::vector<RGB24> bitmap_to_array(const char *path);
