@@ -4,14 +4,24 @@
 #include <cstdint>
 
 int index(int columns, int x, int y);
+RGB24 *bitmapToArray(const char *path);
 
 int main(int argc, char *argv[]) {
     // if (argc < 2) {
     //     return -1;
     // }
+    return 0;
+}
 
+// Return index for 1D array given coordinates
+int index(int columns, int x, int y) {
+    return (y * columns + x);
+}
+
+RGB24 *bitmapToArray(const char *path) {
+    // Open image
     std::ifstream img;
-    img.open("./img/bunny.bmp", std::ios_base::binary);
+    img.open(path, std::ios_base::binary);
 
     // Get header
     BITMAPFILEHEADER header;
@@ -33,8 +43,6 @@ int main(int argc, char *argv[]) {
 
     // For pixel arrays with no padding
     if (width % 4 == 0) {
-
-        // Iterate as such 
         for (int y = height - 1; y >= 0; y--) {
             for (int x = 0; x < width; x++) {
                 if (img.peek() == EOF) {
@@ -58,10 +66,5 @@ int main(int argc, char *argv[]) {
     }
     img.close();
 
-    return 0;
-}
-
-// Return index for 1D array given coordinates
-int index(int columns, int x, int y) {
-    return (y * columns + x);
+    return pixel_array;
 }
