@@ -19,15 +19,12 @@ int index(int columns, int x, int y) {
 }
 
 RGB24 *bitmapToArray(const char *path) {
-    // Open image
     std::ifstream img;
     img.open(path, std::ios_base::binary);
 
-    // Get header
     BITMAPFILEHEADER header;
     img.read((char*) &header, sizeof(BITMAPFILEHEADER));
 
-    // Get info header
     BITMAPINFOHEADER info_header;
     img.read((char*) &info_header, sizeof(BITMAPINFOHEADER));
 
@@ -38,7 +35,6 @@ RGB24 *bitmapToArray(const char *path) {
     // Go to pixel information
     img.seekg(header.offset);
 
-    // Initialize pixel array
     RGB24 *pixel_array = new RGB24[width * height];
 
     // For pixel arrays with no padding
