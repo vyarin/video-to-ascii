@@ -4,7 +4,7 @@
 #include <cstdint>
 
 int index(int columns, int x, int y);
-RGB24 *bitmapToArray(const char *path);
+RGB24 *bitmap_to_array(const char *path);
 
 int main(int argc, char *argv[]) {
     // if (argc < 2) {
@@ -18,7 +18,7 @@ int index(int columns, int x, int y) {
     return (y * columns + x);
 }
 
-RGB24 *bitmapToArray(const char *path) {
+RGB24 *bitmap_to_array(const char *path) {
     std::ifstream img;
     img.open(path, std::ios_base::binary);
 
