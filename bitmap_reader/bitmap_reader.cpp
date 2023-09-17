@@ -19,6 +19,8 @@ int index(int columns, int x, int y) {
 }
 
 std::vector<RGB24> bitmap_to_array(const char *path) {
+    std::vector<RGB24> pixel_array;
+
     std::ifstream img;
     img.open(path, std::ios_base::binary);
 
@@ -35,7 +37,7 @@ std::vector<RGB24> bitmap_to_array(const char *path) {
     // Go to pixel information
     img.seekg(header.offset);
 
-    std::vector<RGB24> pixel_array(width * height);
+    pixel_array.resize(width * height);
 
     // For pixel arrays with no padding
     if (width % 4 == 0) {
