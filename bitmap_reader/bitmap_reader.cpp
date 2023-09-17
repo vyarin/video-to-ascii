@@ -70,6 +70,3 @@ std::vector<RGB24> bitmap_to_array(const char *path) {
 
     return pixel_array;
 }
-
-    return pixel_array;
-}
