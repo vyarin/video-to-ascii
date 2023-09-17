@@ -64,11 +64,8 @@ std::vector<RGB24> bitmap_to_array(const char *path) {
     }
     img.close();
 
-    for (int i = 0; i < width * height; i++) {
-        std::cout << (int) pixel_array[i].rgb_blue << '\n';
-        std::cout << (int) pixel_array[i].rgb_green << '\n';
-        std::cout << (int) pixel_array[i].rgb_red << "\n\n";
-    }
+    return pixel_array;
+}
 
     return pixel_array;
 }
