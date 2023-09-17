@@ -24,6 +24,10 @@ std::vector<RGB24> bitmap_to_array(const char *path) {
     std::ifstream img;
     img.open(path, std::ios_base::binary);
 
+    if (!img) {
+        return pixel_array;
+    }
+
     BITMAPFILEHEADER header;
     img.read((char*) &header, sizeof(BITMAPFILEHEADER));
 
