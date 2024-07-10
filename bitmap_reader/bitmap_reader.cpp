@@ -4,6 +4,7 @@
 #include <vector>
 
 std::vector<std::vector<RGB24>> bitmap_to_array(const char *path);
+double rgb_to_greyscale(RGB24 color);
 
 int main(int argc, char *argv[]) {
     // if (argc < 2) {
@@ -66,4 +67,13 @@ std::vector<std::vector<RGB24>> bitmap_to_array(const char *path) {
     img.close();
 
     return pixel_array;
+}
+
+double rgb_to_greyscale(RGB24 color) {
+    double R{(double) color.rgb_red / 255};
+    double G{(double) color.rgb_green / 255};
+    double B{(double) color.rgb_blue / 255};
+
+    double c_lin = 0.2126 * R + 0.7152 * G + 0.0722 * B;
+    return ((c_lin <= 0.0031308) ? 12.92 * c_lin : (1.055 * pow(c_lin, 1 / 2.4)) - 0.055);
 }
