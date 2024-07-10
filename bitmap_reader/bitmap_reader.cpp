@@ -4,7 +4,7 @@
 #include <vector>
 
 int index(int columns, int x, int y);
-std::vector<RGB24> bitmap_to_array(const char *path);
+std::vector<std::vector<RGB24>> bitmap_to_array(const char *path);
 
 int main(int argc, char *argv[]) {
     // if (argc < 2) {
@@ -18,8 +18,8 @@ int index(int columns, int x, int y) {
     return (y * columns + x);
 }
 
-std::vector<RGB24> bitmap_to_array(const char *path) {
-    std::vector<RGB24> pixel_array;
+std::vector<std::vector<RGB24>> bitmap_to_array(const char *path) {
+    std::vector<std::vector<RGB24>> pixel_array;
 
     std::ifstream img;
     img.open(path, std::ios_base::binary);
@@ -41,7 +41,10 @@ std::vector<RGB24> bitmap_to_array(const char *path) {
     // Go to pixel information
     img.seekg(header.offset);
 
-    pixel_array.resize(width * height);
+    pixel_array.resize(height);
+    for (int i = 0; i < width; i++) {
+        pixel_array[i].resize(width);
+    }
 
     // For pixel arrays with no padding
     if (width % 4 == 0) {
@@ -51,7 +54,7 @@ std::vector<RGB24> bitmap_to_array(const char *path) {
                     // Exception
                     break;
                 }
-                img.read((char*) &pixel_array[index(width, x, y)], sizeof(RGB24));
+                img.read((char*) &pixel_array[y][x], sizeof(RGB24));
             }
         }
     } else {
@@ -59,7 +62,7 @@ std::vector<RGB24> bitmap_to_array(const char *path) {
         
         for (int y = height - 1; y >= 0; y--) {
             for (int x = 0; x < width; x++) {
-                img.read((char*) &pixel_array[index(width, x, y)], sizeof(RGB24));
+                img.read((char*) &pixel_array[y][x], sizeof(RGB24));
             }
 
             // Skip padding
