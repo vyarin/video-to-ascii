@@ -3,7 +3,7 @@
 
 #include <map>
 
-extern std::map<double, char> ascii_map {
+const std::map<double, char> ascii_map {
     {0, ' '},
     {0.0751, '`'},
     {0.0829, '.'},
