@@ -13,11 +13,6 @@ int main(int argc, char *argv[]) {
     return 0;
 }
 
-// Return index for 1D array given coordinates
-int index(int columns, int x, int y) {
-    return (y * columns + x);
-}
-
 std::vector<std::vector<RGB24>> bitmap_to_array(const char *path) {
     std::vector<std::vector<RGB24>> pixel_array;
 
