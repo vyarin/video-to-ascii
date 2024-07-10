@@ -3,7 +3,6 @@
 #include <fstream>
 #include <vector>
 
-int index(int columns, int x, int y);
 std::vector<std::vector<RGB24>> bitmap_to_array(const char *path);
 
 int main(int argc, char *argv[]) {
