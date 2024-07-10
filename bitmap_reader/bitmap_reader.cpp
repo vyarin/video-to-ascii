@@ -2,6 +2,7 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
+#include <cmath>
 
 std::vector<std::vector<RGB24>> bitmap_to_array(const char *path);
 double rgb_to_greyscale(RGB24 color);
