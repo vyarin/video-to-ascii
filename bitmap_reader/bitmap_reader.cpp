@@ -77,7 +77,7 @@ double rgb_to_greyscale(RGB24 color) {
     double G{(double) color.rgb_green / 255};
     double B{(double) color.rgb_blue / 255};
 
-    double c_lin = 0.2126 * R + 0.7152 * G + 0.0722 * B;
+    double c_lin = (0.2126 * R) + (0.7152 * G) + (0.0722 * B);
     return ((c_lin <= 0.0031308) ? 12.92 * c_lin : (1.055 * pow(c_lin, 1 / 2.4)) - 0.055);
 }
 
