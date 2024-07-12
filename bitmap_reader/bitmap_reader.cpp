@@ -3,9 +3,11 @@
 #include <fstream>
 #include <vector>
 #include <cmath>
+#include <map>
 
 std::vector<std::vector<RGB24>> bitmap_to_array(const char *path);
 double rgb_to_greyscale(RGB24 color);
+char find_ascii(double luminance);
 
 int main(int argc, char *argv[]) {
     // if (argc < 2) {
@@ -77,4 +79,25 @@ double rgb_to_greyscale(RGB24 color) {
 
     double c_lin = 0.2126 * R + 0.7152 * G + 0.0722 * B;
     return ((c_lin <= 0.0031308) ? 12.92 * c_lin : (1.055 * pow(c_lin, 1 / 2.4)) - 0.055);
+}
+
+char find_ascii(double luminance) {
+    std::map<double, char>::const_iterator low, prev;
+
+    low = ascii_map.lower_bound(luminance);
+
+    if (low == ascii_map.end()) {
+        return '@';
+    } else {
+        if (low != ascii_map.begin()) {
+            prev = low--;
+            if ((low->first - luminance) > (luminance - prev->first)) {
+                return prev->second;
+            } else {
+                return low->second; // Upper diff <= lower diff
+            }
+        } else {
+            return ' ';
+        } 
+    }
 }
