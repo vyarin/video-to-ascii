@@ -9,6 +9,7 @@
 std::vector<std::vector<RGB24>> bitmap_to_array(const char *path);
 double rgb_to_greyscale(RGB24 color);
 char find_ascii(double luminance);
+void print_ascii(std::vector<std::vector<RGB24>>& pixel_array);
 
 int main(int argc, char *argv[]) {
     // if (argc < 2) {
@@ -100,5 +101,14 @@ char find_ascii(double luminance) {
         } else {
             return ' ';
         } 
+    }
+}
+
+void print_ascii(std::vector<std::vector<RGB24>>& pixel_array) {
+    for (int y = 0; y < pixel_array.size(); y++) {
+        for (int x = 0; x < pixel_array[0].size(); x++) {
+            std::cout << find_ascii(rgb_to_greyscale(pixel_array[y][x]));
+        }
+        std::cout << '\n';
     }
 }
