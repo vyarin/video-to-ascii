@@ -40,7 +40,7 @@ std::vector<std::vector<RGB24>> bitmap_to_array(const char *path) {
     img.seekg(header.offset);
 
     pixel_array.resize(height);
-    for (int i = 0; i < width; i++) {
+    for (int i = 0; i < height; i++) {
         pixel_array[i].resize(width);
     }
 
