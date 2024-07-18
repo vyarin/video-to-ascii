@@ -1,10 +1,15 @@
 #include "bitmap.h"
+#include "ascii_map.h"
 #include <iostream>
 #include <fstream>
 #include <vector>
+#include <cmath>
+#include <map>
 
-int index(int columns, int x, int y);
-std::vector<RGB24> bitmap_to_array(const char *path);
+std::vector<std::vector<RGB24>> bitmap_to_array(const char *path);
+double rgb_to_greyscale(RGB24 color);
+char find_ascii(double luminance);
+void print_ascii(std::vector<std::vector<RGB24>>& pixel_array);
 
 int main(int argc, char *argv[]) {
     // if (argc < 2) {
@@ -13,13 +18,8 @@ int main(int argc, char *argv[]) {
     return 0;
 }
 
-// Return index for 1D array given coordinates
-int index(int columns, int x, int y) {
-    return (y * columns + x);
-}
-
-std::vector<RGB24> bitmap_to_array(const char *path) {
-    std::vector<RGB24> pixel_array;
+std::vector<std::vector<RGB24>> bitmap_to_array(const char *path) {
+    std::vector<std::vector<RGB24>> pixel_array;
 
     std::ifstream img;
     img.open(path, std::ios_base::binary);
@@ -41,7 +41,10 @@ std::vector<RGB24> bitmap_to_array(const char *path) {
     // Go to pixel information
     img.seekg(header.offset);
 
-    pixel_array.resize(width * height);
+    pixel_array.resize(height);
+    for (int i = 0; i < height; i++) {
+        pixel_array[i].resize(width);
+    }
 
     // For pixel arrays with no padding
     if (width % 4 == 0) {
@@ -51,7 +54,7 @@ std::vector<RGB24> bitmap_to_array(const char *path) {
                     // Exception
                     break;
                 }
-                img.read((char*) &pixel_array[index(width, x, y)], sizeof(RGB24));
+                img.read((char*) &pixel_array[y][x], sizeof(RGB24));
             }
         }
     } else {
@@ -59,7 +62,7 @@ std::vector<RGB24> bitmap_to_array(const char *path) {
         
         for (int y = height - 1; y >= 0; y--) {
             for (int x = 0; x < width; x++) {
-                img.read((char*) &pixel_array[index(width, x, y)], sizeof(RGB24));
+                img.read((char*) &pixel_array[y][x], sizeof(RGB24));
             }
 
             // Skip padding
@@ -69,4 +72,43 @@ std::vector<RGB24> bitmap_to_array(const char *path) {
     img.close();
 
     return pixel_array;
+}
+
+double rgb_to_greyscale(RGB24 color) {
+    double R{(double) color.rgb_red / 255};
+    double G{(double) color.rgb_green / 255};
+    double B{(double) color.rgb_blue / 255};
+
+    double c_lin = (0.2126 * R) + (0.7152 * G) + (0.0722 * B);
+    return ((c_lin <= 0.0031308) ? 12.92 * c_lin : (1.055 * pow(c_lin, 1 / 2.4)) - 0.055);
+}
+
+char find_ascii(double luminance) {
+    std::map<double, char>::const_iterator low, prev;
+
+    low = ascii_map.lower_bound(luminance);
+
+    if (low == ascii_map.end()) {
+        return '@';
+    } else {
+        if (low != ascii_map.begin()) {
+            prev = low--;
+            if ((low->first - luminance) > (luminance - prev->first)) {
+                return prev->second;
+            } else {
+                return low->second; // Upper diff <= lower diff
+            }
+        } else {
+            return ' ';
+        } 
+    }
+}
+
+void print_ascii(std::vector<std::vector<RGB24>>& pixel_array) {
+    for (int y = 0; y < pixel_array.size(); y++) {
+        for (int x = 0; x < pixel_array[0].size(); x++) {
+            std::cout << find_ascii(rgb_to_greyscale(pixel_array[y][x]));
+        }
+        std::cout << '\n';
+    }
 }
