@@ -5,16 +5,33 @@
 #include <vector>
 #include <cmath>
 #include <map>
+#include <string>
+#include <filesystem>
+#include <unistd.h>
+#include <algorithm>
+#include <cstdlib>
 
 std::vector<std::vector<RGB24>> bitmap_to_array(const char *path);
 double rgb_to_greyscale(RGB24 color);
 char find_ascii(double luminance);
 void print_ascii(std::vector<std::vector<RGB24>>& pixel_array);
+void play_sequence(std::string filepath, unsigned int framerate);
 
 int main(int argc, char *argv[]) {
-    // if (argc < 2) {
-    //     return -1;
-    // }
+    if (argc != 3) {
+        std::cout << "Usage: [filepath] [framerate (number)]" << std::endl;
+        return 1;
+    }
+
+    int framerate{std::atoi(argv[2])};
+
+    if ((framerate > 0) && (framerate <= 60)) {
+        play_sequence(argv[1], framerate);
+    } else {
+        std::cout << "Please enter a positive framerate between 1 and 60" << std::endl;
+        return 1;
+    }
+    
     return 0;
 }
 
@@ -112,3 +129,28 @@ void print_ascii(std::vector<std::vector<RGB24>>& pixel_array) {
         std::cout << '\n';
     }
 }
+
+void play_sequence(std::string filepath, unsigned int framerate) {
+    unsigned int millisecond = 1000;
+
+
+    std::vector<std::string> unsorted_files;
+    for (const auto &entry : std::filesystem::directory_iterator(filepath)) {
+        // Check if file is a bitmap
+        if (std::filesystem::is_regular_file(entry) && entry.path().extension() == ".bmp") {
+            unsorted_files.push_back(entry.path().string());
+        }
+    }
+
+    std::cout << "sorting..." << std::endl;
+    
+    std::sort(unsorted_files.begin(), unsorted_files.end());
+    std::vector<std::vector<RGB24>> frame;
+    
+    for (const auto &entry : unsorted_files) {
+        frame = bitmap_to_array(entry.c_str());
+        print_ascii(frame);
+        usleep(millisecond * (1000 / framerate));
+    }
+}
+
